@@ -3,9 +3,11 @@ package br.com.vini.camel;
 import org.apache.camel.CamelContext;
 import org.apache.camel.Exchange;
 import org.apache.camel.builder.RouteBuilder;
+import org.apache.camel.component.http4.HttpMethods;
 import org.apache.camel.impl.DefaultCamelContext;
 
-public class RotaPedidos {
+public class RotaPedidos2HttpGET {
+	//http://localhost:8080/webservices/ebook/item
 	public static void main(String[] args) throws Exception {
 
 		CamelContext context = new DefaultCamelContext();
@@ -24,8 +26,9 @@ public class RotaPedidos {
 				.log("${exchange.pattern}")
 				.marshal().xmljson()
 				.log("${body}")
-				.setHeader(Exchange.FILE_NAME, simple("${file:name.noext}-${header.CamelSplitIndex}.json"))
-				.to("file:saida");
+				.setHeader(Exchange.HTTP_METHOD, HttpMethods.GET)
+				.setHeader(Exchange.HTTP_QUERY, constant("ebookId=ARQ&pedidoId=245125&clienteId=edgar.b@abc.com"))
+				.to("http4://localhost:8080/webservices/ebook/item");
 				
 			}
 		});
